@@ -3,6 +3,7 @@ version: '3'
 services:
   mysql57:
     image: mysql:5.7.22
+    restart: always
     ports:
       - "40001:3306"
     environment:
@@ -13,6 +14,7 @@ services:
 
   mongodb36:
     image: mongo:3.6
+    restart: always
     ports:
       - "40003:27017"
       - "40004:8081"
@@ -25,6 +27,7 @@ services:
 
   redis32:
     image: redis:3.2
+    restart: always
     ports:
       - "40008:6379"
     volumes:
@@ -32,6 +35,7 @@ services:
 
   crossbar:
     image: crossbario/crossbar
+    restart: always
     labels:
       - "traefik.frontend.rule=Host:crossbar.dev.ecoffer.net"
     ports:
@@ -39,6 +43,7 @@ services:
 
   jenkins:
     image: jenkinsci/blueocean
+    restart: always
     user: root
     ports:
       - "8083:8080"
@@ -49,6 +54,7 @@ services:
 
   registry:
     image: registry:2
+    restart: always
     ports:
       - "5000:5000"
     volumes:
@@ -61,6 +67,7 @@ services:
 
   Nginx1.14:
     image: nginx:1.14
+    restart: always
     ports:
       - "8001:80"
     volumes:
