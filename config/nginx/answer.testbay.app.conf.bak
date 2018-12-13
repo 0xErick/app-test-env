@@ -1,0 +1,55 @@
+# study
+server {
+    listen  80;
+    server_name answer.testbay.app;
+    
+    set $siteroot /www/code/question-pools/master;
+
+    index  index.php index.html index.htm;
+
+    try_files $uri $uri/ @rewrite;
+
+    access_log  /www/logs/answer.testbay.app.log;
+     client_max_body_size 0;
+
+ 
+
+        set $webroot $siteroot/public/;
+        index  index.html index.htm index.php server.php;
+        if (!-e $request_filename)
+        {
+          #地址作为将参数rewrite到index.php上。
+          rewrite ^/(.*)$ /index.php?s=/$1;
+        }
+
+
+	location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+        {
+	    set $webroot  $siteroot/public;
+            expires      30d;
+        }
+  location ~ .*\.(js|css)?$
+  {
+	    set $webroot  $siteroot/public;
+            expires      12h;
+        }
+    
+  root $webroot;
+    location ~ \.php {
+        fastcgi_pass app:9000;
+        fastcgi_index /index.php;
+
+        fastcgi_split_path_info       ^(.+\.php)(/.+)$;
+        fastcgi_param PATH_INFO       $fastcgi_path_info;
+        fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include                       fastcgi_params;
+    }
+
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+
+}
