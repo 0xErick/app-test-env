@@ -1,0 +1,79 @@
+version: '3'
+
+services:
+  mysql57:
+    image: mysql:5.7.22
+    ports:
+      - "12306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    volumes:
+      - mysql57-data:/var/lib/mysql
+
+  mongodb36:
+    image: mongo:3.6
+    ports:
+      - "12317:27017"
+      - "12381:8081"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongodb36-data:/data/db
+      - mongodb36-configdb:/data/configdb
+
+  redis32:
+    image: redis:3.2
+    ports:
+      - "12379:6379"
+    volumes:
+      - redis32-data:/data
+
+  crossbar:
+    image: crossbario/crossbar
+    labels:
+      - "traefik.frontend.rule=Host:crossbar.dev.ecoffer.net"
+
+  jenkins:
+    image: jenkinsci/blueocean
+    user: root
+    volumes:
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.frontend.rule=Host:jenkins.dev.ecoffer.net"
+
+  registry:
+    image: registry:2
+    volumes:
+      - registry-data:/var/lib/registry
+      - "$PWD/config/registry/auth:/auth"
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    labels:
+      - "traefik.frontend.rule=Host:hub.dev.ecoffer.net"
+
+  # reverse-proxy:
+  #   image: traefik # The official Traefik docker image
+  #   command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+  #   ports:
+  #     - "22280:80"     # The HTTP port
+  #     - "28080:8080" # The Web UI (enabled by --api)
+  #     - "8081:80"
+  #     - "8082:80"
+  #     - "9999:80"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+  #     - '$PWD/config/traefik:/etc/traefik'
+
+volumes:
+  mysql57-data:
+  mongodb36-data:
+  mongodb36-configdb:
+  redis32-data:
+  registry-data:
+  jenkins-data:
+    external: true
