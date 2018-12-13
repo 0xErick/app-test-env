@@ -46,8 +46,6 @@ services:
     volumes:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-    labels:
-      - "traefik.frontend.rule=Host:jenkins.dev.ecoffer.net"
 
   registry:
     image: registry:2
@@ -60,18 +58,16 @@ services:
       REGISTRY_AUTH: htpasswd
       REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
       REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
-    labels:
-      - "traefik.frontend.rule=Host:hub.dev.ecoffer.net"
 
-    Nginx1.14:
-      image: nginx:1.14
-      ports:
-        - "8001:80"
-      volumes:
-        - "$PWD/config/nginx:/etc/nginx/conf.d"
-        - "$PWD/code:/www/code"
-        - "$PWD/logs:/www/logs"
-      container_name: nginx
+  Nginx1.14:
+    image: nginx:1.14
+    ports:
+      - "8001:80"
+    volumes:
+      - "$PWD/config/nginx:/etc/nginx/conf.d"
+      - "$PWD/code:/www/code"
+      - "$PWD/logs:/www/logs"
+    container_name: nginx
 
 volumes:
   mysql57-data:
