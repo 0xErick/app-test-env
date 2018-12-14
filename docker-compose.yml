@@ -89,6 +89,10 @@ services:
     container_name: traefik
     networks:
       - traefik_net
+
+networks:
+  traefik_net:
+
 volumes:
   mysql57-data:
   mongodb36-data:
