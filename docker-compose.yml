@@ -78,6 +78,16 @@ services:
       - "$PWD/logs:/www/logs"
     container_name: nginx
 
+  reverse-proxy:
+    image: traefik # The official Traefik docker image
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "44480:80"     # The HTTP port
+      - "48080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # S
+    container_name: traefik
+
 volumes:
   mysql57-data:
   mongodb36-data:
