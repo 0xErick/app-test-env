@@ -36,6 +36,8 @@ services:
   crossbar:
     image: crossbario/crossbar
     restart: always
+    volumes:
+      - "$PWD/config/.crossbar:/node/.crossbar"
     labels:
       - "traefik.frontend.rule=Host:crossbar.dev.ecoffer.net"
     ports:
