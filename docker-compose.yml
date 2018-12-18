@@ -35,6 +35,7 @@ services:
 
   crossbar:
     image: crossbario/crossbar
+    user: root
     restart: always
     volumes:
       - "$PWD/config/.crossbar:/node/.crossbar"
